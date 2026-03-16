@@ -1,0 +1,11 @@
+decision_id: dec-20260314-001
+engagement_id: INT-2026-PHASE3-DEMO
+timestamp: '2026-03-14T04:30:02.000889+00:00'
+cycle: 1
+type: strategy_approval
+input: Initial scoping complete
+decision: Proceed with PyRIT behavioral run
+rationale: Need baseline adaptive multi-turn attack record
+alternatives_considered:
+- Promptfoo only
+cost_estimate_usd: 4.5

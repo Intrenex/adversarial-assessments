@@ -1,0 +1,12 @@
+meta:
+  artifact_id: INT-2026-PHASE3-DEMO-report
+  artifact_type: report
+  engagement_id: INT-2026-PHASE3-DEMO
+  created_at: '2026-03-14T04:30:10.823480+00:00'
+  created_by: reporting-service
+  version: '1.0'
+title: Phase 3 Demo Report
+status: draft
+finding_ids: []
+report_path: /app/engagements/INT-2026-PHASE3-DEMO/reports/INT-2026-PHASE3-DEMO.md
+report_hash: sha256:59f60227c4f77a37d30658ec16eab31553b21d98434956438297073ab6852976

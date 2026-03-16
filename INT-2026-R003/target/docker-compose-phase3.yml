@@ -1,0 +1,131 @@
+# ================================================================
+# Phase 3 Target Stack — Reference Configuration
+#
+# This is a snapshot of the Docker services used during Phase 3
+# testing. It is included as evidence of the test environment,
+# not as a runnable deployment. Volume paths and network config
+# are specific to the Intrenex lab.
+#
+# Services: ollama, llama_guard, nemo, app, iam-api,
+#           ticketing-api, kb-api
+# ================================================================
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "100m"
+    max-file: "5"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: no
+    networks:
+      - pyrit_net
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_NUM_CTX=32768
+    ports:
+      - "11437:11434"
+    volumes:
+      - ./data/ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  llama_guard:
+    build:
+      context: ./services/llama_guard
+    container_name: llama_guard
+    restart: no
+    logging: *default-logging
+    networks:
+      - pyrit_net
+    ports:
+      - "11458:11434"
+    volumes:
+      - ./data/llama_guard_data:/root/.ollama
+
+  nemo:
+    build:
+      context: ./services/nemo_guardrails/NeMo-Guardrails
+    container_name: nemo
+    restart: unless-stopped
+    logging: *default-logging
+    networks:
+      - pyrit_net
+    ports:
+      - "11453:11453"
+    volumes:
+      - ./data/llama_guard_data:/root/.ollama
+      - ./services/nemo_guardrails/NeMo-Guardrails:/nemoguardrails
+    command: ["server", "--config", "/nemoguardrails/config", "--default-config-id", "redteam", "--port", "11453"]
+
+  app:
+    build:
+      context: ./services/app
+    container_name: app
+    restart: unless-stopped
+    logging: *default-logging
+    networks:
+      - pyrit_net
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/nemo_guardrails/NeMo-Guardrails/config/redteam/actions:/nemo_actions
+
+  iam-api:
+    build:
+      context: ./services/iam-api
+    container_name: iam-api
+    restart: no
+    logging: *default-logging
+    networks:
+      - pyrit_net
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/iam-api:/app
+      - iam_data:/app/data
+
+  ticketing-api:
+    build:
+      context: ./services/ticketing-api
+    container_name: ticketing-api
+    restart: no
+    logging: *default-logging
+    networks:
+      - pyrit_net
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./services/ticketing-api:/app
+      - ticketing_data:/app/data
+
+  kb-api:
+    build:
+      context: ./services/kb-api
+    container_name: kb-api
+    restart: no
+    logging: *default-logging
+    networks:
+      - pyrit_net
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./services/kb-api:/app
+      - kb_data:/app/data
+
+volumes:
+  iam_data:
+  ticketing_data:
+  kb_data:
+
+networks:
+  pyrit_net:
+    driver: bridge

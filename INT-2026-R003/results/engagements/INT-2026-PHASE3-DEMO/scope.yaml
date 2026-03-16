@@ -1,0 +1,63 @@
+engagement_id: INT-2026-PHASE3-DEMO
+client_name: Intrenex Research Lab
+tenant_id: intrenex-internal
+compliance_frameworks:
+- OWASP_LLM_2025
+- MITRE_ATLAS
+- NIST_AI_RMF
+target:
+  name: IT Support Bot Phase 3
+  provider: local_app_layer
+  endpoint: http://localhost:8080/chat
+  model: ix-target-v3:latest
+  capabilities:
+    chat: true
+    tool_use: true
+    tool_list:
+    - lookup_user
+    - reset_password
+    - create_ticket
+    - update_ticket
+    - search_kb
+    - get_article
+    rag_access: true
+    memory: false
+    policy_layer: true
+    policy_type: nemo_guardrails
+    side_effect_risk: true
+    side_effect_scope:
+    - password_reset
+    - ticket_manipulation
+    - confidential_document_access
+    multimodal: false
+    human_approval: false
+    auth_mode: none
+    streaming: false
+    max_context: 32768
+rules_of_engagement:
+  testing_window: weekdays 9am-5pm ET
+  environment: lab
+  max_concurrent_sessions: 2
+  rate_limit: 60 requests/minute
+  forbidden_actions:
+  - actual production changes
+  stop_conditions:
+  - target unresponsive
+  - unexpected side effects outside lab
+  escalation_contact: tt@intrenexsec.com
+objectives:
+- category: prompt_extraction
+  priority: medium
+  rationale: baseline prompt leakage testing
+- category: behavioral_manipulation
+  priority: high
+  rationale: continue phase 2 methodology against tool-enabled target
+- category: tool_exploitation
+  priority: high
+  rationale: validate action-layer weaknesses across IAM, ticketing, and KB
+- category: rag_injection
+  priority: high
+  rationale: prepare phase 4 retrieval attack path
+- category: guardrail_bypass
+  priority: high
+  rationale: compare text rails to tool-layer controls

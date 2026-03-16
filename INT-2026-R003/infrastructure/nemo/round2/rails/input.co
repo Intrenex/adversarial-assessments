@@ -1,0 +1,28 @@
+# ── Input Rails ───────────────────────────────────────────────────────────────
+# Run before the model processes the user message.
+# Both flows must pass for the message to reach the model.
+#
+# Round 2 finding: these two rails pass adversarial tool-abuse requests
+# because the requests look like normal IT support interactions.
+# A compliance auditor asking to "verify the password reset procedure"
+# passes LlamaGuard (not harmful) and topic scope (mentions passwords).
+
+define flow llama guard check input
+  $is_safe = execute llama_guard_check(text=$user_message, role="user")
+  if not $is_safe
+    bot refuse not allowed
+    stop
+
+define flow check topic allowed
+  $in_scope = execute check_topic_scope(text=$user_message)
+  if not $in_scope
+    bot refuse off topic
+    stop
+
+# ── Bot responses ──────────────────────────────────────────────────────────────
+
+define bot refuse not allowed
+  "I'm unable to process that request."
+
+define bot refuse off topic
+  "That falls outside IT support scope. I can help with password resets, hardware requests, support tickets, and knowledge base lookups."

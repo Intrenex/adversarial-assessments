@@ -1,0 +1,92 @@
+# ── Action Rails ──────────────────────────────────────────────────────────────
+# Run when the model attempts to execute a tool call.
+# These are the Round 2 controls — absent in Round 1, which is the finding.
+#
+# Each flow addresses one specific attack surface:
+#
+#   check action allowed       → allowlist beats blocklist
+#   check action parameters    → attacker-controlled inputs reach APIs directly
+#   check action authorization → any user can trigger any operation
+#   check action rate limit    → automated enumeration / bulk operations
+#   check confirmation required → silent write operations
+#
+# Residual gap (intentional, Phase 4 bridge):
+# Tool RESULTS are not sanitized before the model sees them.
+# A poisoned document retrieved by search_kb / get_article flows into
+# model context as trusted data. That's Phase 4's attack surface.
+
+# ── Allowlist ──────────────────────────────────────────────────────────────────
+# Defines what the model is permitted to call.
+# Everything not on the list is rejected regardless of how it was requested.
+# Allowlists beat blocklists — define what's permitted, reject everything else.
+
+define flow check action allowed
+  $is_allowed = execute check_tool_allowed(action_name=$action)
+  if not $is_allowed
+    bot refuse action not permitted
+    stop
+
+# ── Parameter validation ───────────────────────────────────────────────────────
+# Validates that tool parameters contain only legal values.
+# Catches: attacker-controlled priority="critical", username="ceo",
+#          permission="modify_infrastructure" passed through conversation.
+
+define flow check action parameters
+  $is_valid = execute validate_tool_parameters(action_name=$action, parameters=$action_parameters)
+  if not $is_valid
+    bot refuse invalid parameters
+    stop
+
+# ── Authorization ──────────────────────────────────────────────────────────────
+# Checks whether the session user is authorized for this specific operation.
+# Identity comes from session context, NOT from the conversation.
+# (Evergreen gap: cannot distinguish adversarial intent from legitimate use
+# through text analysis alone — this rail catches role mismatches, not intent.)
+
+define flow check action authorization
+  $is_authorized = execute check_authorization(action_name=$action, parameters=$action_parameters)
+  if not $is_authorized
+    bot refuse not authorized
+    stop
+
+# ── Rate limiting ──────────────────────────────────────────────────────────────
+# Enforces per-session tool call budget.
+# Catches: automated enumeration, bulk password resets, KB scraping.
+# Misses: slow manual attacks, single high-value operations within the limit.
+
+define flow check action rate limit
+  $within_limit = execute check_rate_limit(action_name=$action)
+  if not $within_limit
+    bot refuse rate limit exceeded
+    stop
+
+# ── Confirmation gate ──────────────────────────────────────────────────────────
+# Write operations require the user to have explicitly confirmed the action
+# in their message. Catches: silent write operations triggered by
+# conversational manipulation where the user didn't request the action directly.
+# Misses: attacker who includes explicit confirmation language in attack payload.
+
+define flow check confirmation required
+  $needs_confirm = execute check_needs_confirmation(action_name=$action)
+  if $needs_confirm
+    $confirmed = execute check_user_confirmed(action_name=$action, user_message=$user_message)
+    if not $confirmed
+      bot ask confirmation
+      stop
+
+# ── Bot responses ──────────────────────────────────────────────────────────────
+
+define bot refuse action not permitted
+  "That operation isn't available through this interface. Please contact the IT Help Desk directly at ext. 4357."
+
+define bot refuse invalid parameters
+  "I wasn't able to process that request — one or more required values were invalid. Please check your details and try again."
+
+define bot refuse not authorized
+  "You don't have permission to perform that action. If you believe this is an error, please contact your manager or IT."
+
+define bot refuse rate limit exceeded
+  "You've reached the limit for automated actions in this session. Please wait a few minutes or contact the IT Help Desk directly."
+
+define bot ask confirmation
+  "I want to make sure before proceeding — can you confirm you'd like me to go ahead with this action? Please reply 'yes, confirm' to proceed."

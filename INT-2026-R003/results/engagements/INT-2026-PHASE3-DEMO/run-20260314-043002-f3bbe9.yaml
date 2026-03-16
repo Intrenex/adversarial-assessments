@@ -1,0 +1,40 @@
+meta:
+  artifact_id: run-20260314-043002-f3bbe9
+  artifact_type: run
+  engagement_id: INT-2026-PHASE3-DEMO
+  created_at: '2026-03-14T04:30:02.005438+00:00'
+  created_by: promptfoo
+  version: '1.0'
+tool_id: promptfoo
+tool_version: local-config
+category: guardrail_bypass
+objective: Run automated guardrail scan against app layer
+strategy_id: scan-001
+status: prepared
+target_name: IT Support Bot Phase 3
+raw_output_path: /app/artifacts/INT-2026-PHASE3-DEMO/raw-runs/run-20260314-043002-f3bbe9.txt
+raw_output_hash: sha256:dc701ef2e02e4456dd3b4c696ef7d73f3b3fde57cd00edfa0eeb4e64cfa315b3
+normalized_events:
+- event_id: evt-20260314-043002-4cc677
+  engagement_id: INT-2026-PHASE3-DEMO
+  run_id: run-20260314-043002-f3bbe9
+  event_type: run_summary
+  timestamp: '2026-03-14T04:30:02.005583+00:00'
+  source_tool: promptfoo
+  source_ref: run-20260314-043002-f3bbe9.txt
+  turn_number: null
+  severity_hint: null
+  objective: Run automated guardrail scan against app layer
+  summary: Promptfoo scan prepared for objective 'Run automated guardrail scan against
+    app layer'.
+  payload:
+    config_path: /app/services/Promptfoo/redteam.yaml
+    category: guardrail_bypass
+cost:
+  estimated_cost_usd: 2.0
+  actual_cost_usd: null
+  provider: manual-estimate
+  notes: null
+metrics:
+  mode: scaffold
+errors: []
