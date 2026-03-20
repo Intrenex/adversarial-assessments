@@ -32,20 +32,6 @@ Adversarial assessment of the same target with a hardened system prompt — secr
 
 ---
 
-### INT-2026-R003 — Tool Use Exploitation (Phase 3)
-
-Adversarial assessment of the same target with tool integrations (IAM, Ticketing, Knowledge Base) and progressive defense layers (NeMo Guardrails, LlamaGuard). The published repository layout preserves three rounds; the recovered evidence directly documents the text-rails-only and full-action-rails states.
-
-- **Target:** `ix-target-v3` — IT support bot with 3 API integrations
-- **Defense Stack:** NeMo Guardrails, LlamaGuard, application-layer tool calling
-- **Attacker:** GPT-4o via PyRIT with custom tool exploitation strategies
-- **Scanner:** Promptfoo per-round configuration
-- **Structure:** 3 rounds measuring defense effectiveness at each layer
-
-[Assessment Files](./INT-2026-R003/)
-
----
-
 ## Repository Structure
 ```
 RedTeaming/
@@ -71,27 +57,6 @@ RedTeaming/
 │   │   └── promptfoo/            # Scan results
 │   ├── target/
 │   │   └── ix-target-v2.Modelfile
-│   └── README.md
-│
-├── INT-2026-R003/                # Phase 3 — Tool Use Exploitation
-│   ├── attacks/
-│   │   ├── pyrit/                # PyRIT runner, logger, and tool-use strategies
-│   │   └── promptfoo/            # Regression + tool-exploitation scan configs
-│   ├── infrastructure/
-│   │   ├── app/                  # Application-layer tool loop
-│   │   ├── nemo/                 # Round snapshots of guardrail config
-│   │   ├── apis/                 # IAM, Ticketing, KB mock services
-│   │   └── llama_guard/          # LlamaGuard service wrapper
-│   ├── results/
-│   │   ├── round1/               # Placeholder — no recovered raw/no-NeMo set
-│   │   ├── round2/               # Text rails only
-│   │   ├── round3/               # Full action rails
-│   │   ├── cross-round/          # Shared PyRIT export
-│   │   └── engagements/          # Platform engagement artifacts
-│   ├── target/
-│   │   ├── ix-target-v3.Modelfile
-│   │   ├── ix-scope-classifier.Modelfile
-│   │   └── docker-compose-phase3.yml
 │   └── README.md
 │
 └── README.md
