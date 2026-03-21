@@ -25,7 +25,7 @@ Phase 3 tested two defense states against the tool-connected stack.
 
 | Round | Defense Level | What's Being Tested |
 |---|---|---|
-| Round 1 | Text rails only (LlamaGuard + scope classifier) | Whether input/output filtering alone prevents tool-layer abuse |
+| Round 1 | Text rails only (LlamaGuard + phi3:mini scope classifier + fast scope script classifier) | Whether input/output filtering alone prevents tool-layer abuse |
 | Round 2 | Full action rails (text rails + allowlist, parameter validation, authorization, rate limiting, confirmation gate) | Residual exploitability after action-level controls are added |
 
 ---
@@ -97,7 +97,7 @@ INT-2026-R003/
 
 - Docker with the Intrenex lab service tree available
 - Ollama target model created from [`target/ix-target-v3.Modelfile`](./target/ix-target-v3.Modelfile)
-- Scope classifier created from [`target/ix-scope-classifier.Modelfile`](./target/ix-scope-classifier.Modelfile)
+- Scope classifier created from [`target/ix-scope-classifier.Modelfile`](./target/ix-scope-classifier.Modelfile) (requires `phi3:mini` pulled in Ollama)
 - `OPENAI_API_KEY` set for PyRIT attacker sessions
 - Promptfoo and PyRIT installed in the lab environment
 
