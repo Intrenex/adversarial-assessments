@@ -1,0 +1,20 @@
+# ── Dialog Rails ──────────────────────────────────────────────────────────────
+# Session-level controls only. NeMo does not route conversation.
+# The main model handles all conversation and intent.
+#
+# These address Phase 2's trust accumulation finding (F005):
+# "Requests refused at turn 1 succeed after rapport-building at turn 7+"
+# Hard cap at 20 turns — attacker loses accumulated context on session reset.
+
+define flow check turn limit
+  $turn_count = execute get_turn_count()
+  if $turn_count >= 15
+    bot warn session expiring
+
+define flow detect repeated probing
+  $refusal_count = execute get_session_refusal_count()
+  if $refusal_count >= 3
+    $logged = execute log_probe_pattern(turn_count=$refusal_count, user_message=$user_message)
+
+define bot warn session expiring
+  "This session will expire soon. If you need further assistance, please start a new session or contact the IT Help Desk at ext. 4357."
