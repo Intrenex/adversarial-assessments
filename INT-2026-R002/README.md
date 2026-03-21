@@ -1,9 +1,9 @@
 # Phase 2 — Behavioral Manipulation Assessment
 
-**Report:** INT-2026-R002 *(in progress)*
+**Report:** [INT-2026-R002](https://intrenexsec.com/reports/INT-2026-R002)
 **Target:** Llama 3.1 8B Instruct via Ollama — `ix-target-v2:latest`
 **Assessment Type:** Behavioral manipulation with hardened system prompt (system prompt defenses only)
-**Status:** In progress
+**Status:** Published
 
 ---
 
@@ -46,8 +46,8 @@ These attacks are harder to detect than Phase 1's extraction because the output 
 ## Directory Structure
 
 ```
-Phase-2/
-├── phase-2-README.md
+INT-2026-R002/
+├── README.md
 ├── attacks/
 │   ├── promptfoo/
 │   │   ├── promptfooconfig.yaml      # Prompt extraction + multi-turn strategies
@@ -187,7 +187,7 @@ The hardened prompt in Phase 2 was designed to address every finding from [INT-2
 ## Related
 
 - [INT-2026-R001: Adversarial Assessment — Llama 3.1 via Ollama (System Prompt Defenses Only)](https://intrenexsec.com/reports/INT-2026-R001)
-- [Phase 1 Repository](../Phase-1/)
+- [Phase 1 Repository](../INT-2026-R001/)
 - [The Transformer's Blind Spots](https://intrenexsec.com/blog/the-transformers-blind-spots) — Architectural explanation of why these attacks succeed
 - [How to Structure a System Prompt](https://intrenexsec.com/blog/how-to-structure-a-system-prompt) — What changed between V1 and V2
 

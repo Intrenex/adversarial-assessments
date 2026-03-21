@@ -28,13 +28,13 @@ Adversarial assessment of the same target with a hardened system prompt — secr
 - **Scanner:** Promptfoo behavioral manipulation suite (10 plugins)
 - **Objective:** Can the model be manipulated into acting outside its defined purpose even with a hardened prompt?
 
-[Assessment Files](./INT-2026-R002/)
+[Full Report](https://intrenexsec.com/reports/INT-2026-R002) · [Assessment Files](./INT-2026-R002/)
 
 ---
 
 ## Repository Structure
 ```
-RedTeaming/
+adversarial-assessments/
 ├── INT-2026-R001/                # Phase 1 — System Prompt Extraction
 │   ├── attacks/
 │   │   ├── pyrit/                # PyRIT attack runner + strategy
@@ -57,6 +57,26 @@ RedTeaming/
 │   │   └── promptfoo/            # Scan results
 │   ├── target/
 │   │   └── ix-target-v2.Modelfile
+│   └── README.md
+│
+├── INT-2026-R003/                # Phase 3 — Tool Use Exploitation
+│   ├── attacks/
+│   │   ├── pyrit/
+│   │   │   ├── run_attack.py     # Configurable attack runner
+│   │   │   ├── elastic_logger.py # Elasticsearch telemetry logger
+│   │   │   └── strategies/       # 9 custom adversarial strategies
+│   │   └── promptfoo/            # 3 scan configurations (round1/round2)
+│   ├── infrastructure/
+│   │   ├── apis/                 # Mock IAM, Ticketing, KB services
+│   │   ├── app/                  # FastAPI tool-calling application layer
+│   │   ├── llama_guard/          # LlamaGuard service wrapper
+│   │   └── nemo/
+│   │       ├── round1/           # Text rails only (LlamaGuard + scope classifier)
+│   │       └── round2/           # Full action rails (text rails + allowlist, authz, rate limiting, confirmation)
+│   ├── results/
+│   │   ├── pyrit/                # Attack evidence
+│   │   └── promptfoo/            # Scan results
+│   ├── target/                   # docker-compose + Modelfiles
 │   └── README.md
 │
 └── README.md
